@@ -46,7 +46,6 @@
         android:ems="15"
         android:layout_gravity="center"
         android:inputType="textPassword"
-        android:layout_marginTop="20dp"
         android:hint="Password"
         android:textColor="#000000"/>
 
@@ -62,7 +61,14 @@
     <com.facebook.login.widget.LoginButton
         android:id="@+id/facebook_login_bt"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="center"/>
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/google_login_bt"
+        android:layout_width="300dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
         android:layout_gravity="center"/>
 
     <LinearLayout
@@ -70,7 +76,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_marginTop="100dp">
+        android:layout_marginTop="50dp">
 
         <Button
             android:id="@+id/recruit"
