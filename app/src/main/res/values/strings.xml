@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">마이바디</string>
+
+    <string name="facebook_app_id">427284648548285</string>
+    <string name="fb_login_protocol_scheme">fb427284648548285</string>
+
+
+</resources>
