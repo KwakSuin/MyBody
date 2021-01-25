@@ -8,40 +8,46 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class SignIn extends AppCompatActivity {
-    Button end;
-
-    EditText pwd;
+    EditText password;
     EditText repwd;
+    EditText em;
 
     TextView error;
+
+    private static final String TAG = "SIGN_IN_TAG";
+    Button okay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        pwd = findViewById(R.id.pwd);
-        String password = pwd.getText().toString();
-
+        password = findViewById(R.id.pwd);
         repwd = findViewById(R.id.re_pwd);
-        String Repassword = repwd.getText().toString();
-
+        em = findViewById(R.id.email);
         error = findViewById(R.id.checked_txt);
 
-        end = findViewById(R.id.end);
-        end.setOnClickListener(v -> {
+       // firebaseAuth = FirebaseAuth.getInstance();
 
-            if(password != Repassword){
-                error.setVisibility(View.VISIBLE);
+        okay = findViewById(R.id.end);
+        okay.setOnClickListener(v -> {
+            String pwd = password.getText().toString();
+            String Repassword = repwd.getText().toString();
+            String email = em.getText().toString();
+
+            if (pwd.equals(Repassword)) {
+                // 가입 성공
+                Intent intent = new Intent(SignIn.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+
             } else {
-                Intent main = new Intent(getApplicationContext(), MainActivity.class);
-                Toast.makeText(getApplicationContext(),"가입이 완료되었습니다.",Toast.LENGTH_SHORT).show();
-                startActivity(main);
+                // 가입 실패 (비밀번호가 일치하지 않을 때)
+                error.setVisibility(View.VISIBLE);
             }
-
         });
     }
+
 }

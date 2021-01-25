@@ -1,13 +1,14 @@
 package kwaksuin.portfolio.exerciseresult;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -15,7 +16,6 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -24,31 +24,43 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-
-import org.json.JSONObject;
+import com.nhn.android.naverlogin.OAuthLogin;
+import com.nhn.android.naverlogin.OAuthLoginHandler;
+import com.nhn.android.naverlogin.ui.view.OAuthLoginButton;
 
 import java.util.Arrays;
 
 public class Login extends AppCompatActivity {
-    LoginButton facebook_btn;
-    SignInButton google_btn;
     Button check_bt;
     Button recruit;
+    EditText id;
+    EditText pwd;
 
-    GoogleSignInClient client;
-    FirebaseAuth auth;
-    String TAG ="";
-    int SIGN_IN = 123;
-
+    // 페이스북
     FacebookLoginCallBack FBLoginCallBack;
     CallbackManager callbackManager;
+    LoginButton facebook_btn;
+
+    // 구글
+    GoogleSignInClient client;
+    FirebaseAuth auth;
+    String TAG ="GoogleLogin";
+    int SIGN_IN = 123;
+    SignInButton google_btn;
+
+    // 네이버
+    private static String OAUTH_CLIENT_ID = "xvg0ouZt1CsIAjBRkvzB";         // 애플리케이션 등록 후 발급받은 클라이언트 아이디
+    private static String OAUTH_CLIENT_SECRET = "Pm5N7mKbm7";               // 애플리케이션 등록 후 발급받은 클라이언트 시크릿
+    private static String OAUTH_CLIENT_NAME = "마이바디";                    // 네이버 앱의 로그인 화면에 표시할 애플리케이션 이름
+    private static final String naver_TAG = "NaverLgoin";
+    OAuthLogin mOAuthLogin;
+    Context mContext;
+    OAuthLoginButton naverLoginBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,11 +90,22 @@ public class Login extends AppCompatActivity {
             startActivityForResult(signIn, SIGN_IN);
         });
 
+        // 네이버 로그인
+        mContext = this;
+        naverData();
+
         // 확인 버튼
         check_bt = findViewById(R.id.check_bt);
+        id = findViewById(R.id.id);
+        pwd = findViewById(R.id.password);
         check_bt.setOnClickListener(v -> {
-            Intent intent = new Intent(Login.this, MainActivity.class);
-            startActivity(intent);
+            if(id.getText().toString().length() == 0 || pwd.getText().toString().length() == 0){
+                Toast.makeText(getApplicationContext(),"ID / Password를 입력해주세요.",Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(Login.this, MainActivity.class);
+                startActivity(intent);
+            }
+
         });
 
         // 회원가입 버튼
@@ -99,11 +122,14 @@ public class Login extends AppCompatActivity {
         //getHashKey();
     }
 
+    /*
     @Override
     public void onStart(){
         super.onStart();
         FirebaseUser user = auth.getCurrentUser();
     }
+
+     */
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -171,22 +197,47 @@ public class Login extends AppCompatActivity {
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        // 로그인 성공, update UI with the signed-in user's information
-                        Log.d(TAG, "signInWithCredential:success");
+                        // 로그인 성공
+                        Log.d(TAG, "로그인 성공");
                         FirebaseUser user = auth.getCurrentUser();
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(intent);
                         Toast.makeText(getApplicationContext(), "로그인 성공", Toast.LENGTH_LONG).show();
 
                     } else {
-                        // 로그인 실패, display a message to the user.
-                        Log.w(TAG, "signInWithCredential:failure", task.getException());
+                        // 로그인 실패
+                        Log.w(TAG, "로그인 실패", task.getException());
                         Toast.makeText(getApplicationContext(), "로그인 실패", Toast.LENGTH_LONG).show();
 
                     }
 
                 });
     }
+
+    // 네이버
+    private void naverData(){
+        mOAuthLogin = OAuthLogin.getInstance();
+        mOAuthLogin.init(mContext, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, OAUTH_CLIENT_NAME);
+
+        naverLoginBtn = findViewById(R.id.naver_login_bt);
+        naverLoginBtn.setOAuthLoginHandler(naverHandler);
+    }
+
+    @SuppressLint("HandlerLeak")
+    private final OAuthLoginHandler naverHandler = new OAuthLoginHandler() {
+        @Override
+        public void run(boolean success) {
+            if(success){
+                // 성공
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
+            } else {
+                // 실패
+                Toast.makeText(mContext,"로그인 실패",Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 
     /*
     // 페이스북 hashKey 받아오기

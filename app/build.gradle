@@ -35,15 +35,27 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'com.google.firebase:firebase-database:19.6.0'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    // 페이스북
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
 
+    // 구글
     implementation platform('com.google.firebase:firebase-bom:26.3.0')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-core:18.0.1'
     implementation 'com.google.firebase:firebase-auth:20.0.2'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
+
+    // 네이버
+    implementation 'com.naver.nid:naveridlogin-android-sdk:4.2.6'
+    implementation files('libs/naveridlogin_android_sdk_4.2.6')
+    implementation 'com.android.support:appcompat-v7:30.0.0'
+    implementation 'com.android.support:support-core-utils:30.0.0'
+    implementation 'com.android.support:customtabs:30.0.0'
+    implementation 'com.android.support:support-v4:30.0.0'
 }
 
