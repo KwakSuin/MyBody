@@ -22,7 +22,7 @@
         android:id="@+id/id"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:ems="15"
         android:inputType="textPersonName"
         android:hint="ID"
         android:layout_gravity="center"
